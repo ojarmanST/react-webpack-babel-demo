@@ -1,5 +1,6 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
   // Where files should be sent once they are bundled
@@ -15,11 +16,10 @@ module.exports = {
    - devServer is used to quickly develop an application, which is contrary
    to the production mode, which takes slighlty more time to build the application 
    since it minifies the file, which doesn't happen in development mode.
-   - watchContentBase triggers a full page reload when any changes are made in any file.It is disabled by default.
-   */
+   - To enable Hot Module Replacement without page refresh as a fallback in case of build failures, use hot: 'only':   */
  devServer: {
    port: 3000,
-   watchContentBase: true
+   hot: 'only'
  },
   /* Rules of how webpack will take our files, complie & bundle them for the browser 
   - test is where we mention the extension of file which needs to be targetted by the specific loader. 
@@ -35,18 +35,18 @@ module.exports = {
    rules: [
      {
        test: /\.(js|jsx)$/,
-       exclude: /nodeModules/,
+       exclude: /node_modules/,
        use: {
          loader: 'babel-loader'
        }
      },
      {
        test: /\.css$/,
-       use: ['style-loader', 'css-loader']
+       use: [MiniCssExtractPlugin.loader, 'css-loader']
      }
    ]
  },
  /* Lastly we add a plugin called HtmlWebpackPlugin which ensures that the 
     webpack knows which html file template to follow for running the app. */
- plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })],
+ plugins: [new HtmlWebpackPlugin({ template: './src/index.html' }), new MiniCssExtractPlugin({ filename: "main.css" })],
 }
